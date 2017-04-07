@@ -1,0 +1,208 @@
+<div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a
+
+        href="https://github.com/maxogden/commonjs-html-prettyprinter"
+
+    >html (v1.0.0)</a>
+</h1>
+<h4>HTML pretty printer CLI utility (based on jsbeautifier)</h4>
+<div class="apidocSectionDiv"><a
+    href="#apidoc.tableOfContents"
+    id="apidoc.tableOfContents"
+><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.html">module html</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.html.prettyPrint">
+            function <span class="apidocSignatureSpan">html.</span>prettyPrint
+            <span class="apidocSignatureSpan">(html_source, options)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.html" id="apidoc.module.html">module html</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.html.prettyPrint" id="apidoc.element.html.prettyPrint">
+        function <span class="apidocSignatureSpan">html.</span>prettyPrint
+        <span class="apidocSignatureSpan">(html_source, options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function style_html(html_source, options) {
+//Wrapper function to invoke all the necessary constructors and deal with the output.
+
+  var multi_parser,
+      indent_size,
+      indent_character,
+      max_char,
+      brace_style,
+      unformatted;
+
+  options = options || {};
+  indent_size = options.indent_size || 4;
+  indent_character = options.indent_char || &#x27; &#x27;;
+  brace_style = options.brace_style || &#x27;collapse&#x27;;
+  max_char = options.max_char == 0 ? Infinity : options.max_char || 70;
+  unformatted = options.unformatted || [&#x27;a&#x27;, &#x27;span&#x27;, &#x27;bdo&#x27;, &#x27;em&#x27;, &#x27;strong&#x27;, &#x27;dfn&#x27;, &#x27;code&#x27;, &#x27;samp&#x27;, &#x27;kbd&#x27;, &#x27;var&#x27;, &#x27;cite&#x27;, &#x27;abbr&#x27;, &#x27;
+acronym&#x27;, &#x27;q&#x27;, &#x27;sub&#x27;, &#x27;sup&#x27;, &#x27;tt&#x27;, &#x27;i&#x27;, &#x27;b&#x27;, &#x27;big&#x27;, &#x27;small&#x27;, &#x27;u&#x27;, &#x27;s&#x27;, &#x27;strike&#x27;, &#x27;font&#x27;, &#x27;ins&#x27;, &#x27;del&#x27;, &#x27;pre&#x27;, &#x27;address&#x27;, &#x27;dt&#x27;, &#x27;
+h1&#x27;, &#x27;h2&#x27;, &#x27;h3&#x27;, &#x27;h4&#x27;, &#x27;h5&#x27;, &#x27;h6&#x27;];
+
+  function Parser() {
+
+    this.pos = 0; //Parser position
+    this.token = &#x27;&#x27;;
+    this.current_mode = &#x27;CONTENT&#x27;; //reflects the current Parser mode: TAG/CONTENT
+    this.tags = { //An object to hold tags, their position, and their parent-tags, initiated with default values
+      parent: &#x27;parent1&#x27;,
+      parentcount: 1,
+      parent1: &#x27;&#x27;
+    };
+    this.tag_type = &#x27;&#x27;;
+    this.token_text = this.last_token = this.last_text = this.token_type = &#x27;&#x27;;
+
+    this.Utils = { //Uilities made available to the various functions
+      whitespace: &#x22;\n\r\t &#x22;.split(&#x27;&#x27;),
+      single_token: &#x27;br,input,link,meta,!doctype,basefont,base,area,hr,wbr,param,img,isindex,?xml,embed,?php,?,?=&#x27;.split(&#x27;,&#x27;), //
+all the single tags for HTML
+      extra_liners: &#x27;head,body,/html&#x27;.split(&#x27;,&#x27;), //for tags that need a line of whitespace before them
+      in_array: function (what, arr) {
+        for (var i=0; i&#x3c;arr.length; i++) {
+          if (what === arr[i]) {
+            return true;
+          }
+        }
+        return false;
+      }
+    }
+
+    this.get_content = function () { //function to capture regular content between tags
+
+      var input_char = &#x27;&#x27;,
+          content = [],
+          space = false; //if a space is needed
+
+      while (this.input.charAt(this.pos) !== &#x27;&#x3c;&#x27;) {
+        if (this.pos &#x3e;= this.input.length) {
+          return content.length?content.join(&#x27;&#x27;):[&#x27;&#x27;, &#x27;TK_EOF&#x27;];
+        }
+
+        input_char = this.input.charAt(this.pos);
+        this.pos++;
+        this.line_char_count++;
+
+        if (this.Utils.in_array(input_char, this.Utils.whitespace)) {
+          if (content.length) {
+            space = true;
+          }
+          this.line_char_count--;
+          continue; //don&#x27;t want to insert unnecessary space
+        }
+        else if (space) {
+          if (this.line_char_count &#x3e;= this.max_char) { //insert a line when the max_char is reached
+            content.push(&#x27;\n&#x27;);
+            for (var i=0; i&#x3c;this.indent_level; i++) {
+              content.push(this.indent_string);
+            }
+            this.line_char_count = 0;
+          }
+          else{
+            content.push(&#x27; &#x27;);
+            this.line_char_count++;
+          }
+          space = false;
+        }
+        content.push(input_char); //letter at-a-time (or string) inserted to an array
+      }
+      return content.length?content.join(&#x27;&#x27;):&#x27;&#x27;;
+    }
+
+    this.get_contents_to = function (name) { //get the full content of a script or style to pass to js_beautify
+      if (this.pos == this.input.length) {
+        return [&#x27;&#x27;, &#x27;TK_EOF&#x27;];
+      }
+      var input_char = &#x27;&#x27;;
+      var content = &#x27;&#x27;;
+      var reg_match = new RegExp(&#x27;\&#x3c;\/&#x27; + name + &#x27;\\s*\&#x3e;&#x27;, &#x27;igm&#x27;);
+      reg_match.lastIndex = this.pos;
+      var reg_array = reg_match.exec(this.input);
+      var end_script = reg_array?reg_array.index:this.input.length; //absolute end of script
+      if(this.pos &#x3c; end_script) { //get everything in between the script tags
+        content = this.input.substring(this.pos, end_script);
+        this.pos = end_script;
+      }
+      return content;
+    }
+
+    this.record_tag = function (tag){ //function to record a tag and its parent in this.tags Object
+      if (this.tags[tag + &#x27;count&#x27;]) { //check for the existence of this tag type
+        this.tags[tag + &#x27;count&#x27;]++;
+        this.tags[tag + this.tags[tag + &#x27;count&#x27;]] = th ...</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
