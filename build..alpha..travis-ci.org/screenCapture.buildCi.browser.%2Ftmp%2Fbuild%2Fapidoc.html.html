@@ -187,7 +187,23 @@ all the single tags for HTML
       if (this.tags[tag + 'count']) { //check for the existence of this tag type
         this.tags[tag + 'count']++;
         this.tags[tag + this.tags[tag + 'count']] = th ...</pre></li>
-    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    <li>example usage<pre class="apidocCodePre">...
+
+if (args.length &gt; 0) processFiles(args)
+else readStdin()
+
+function readStdin() {
+var stdin = process.openStdin()
+stdin.pipe(concat(function concatted (buff) {
+  process.stdout.write(html.<span class="apidocCodeKeywordSpan">prettyPrint</span>(buff.toString(), {indent_size: 2}))
+}))
+}
+
+function processFiles(files) {
+if (files.length &gt; 1) {
+  files.map(function(filename) {
+    prettifyFile(filename)
+...</pre></li>
     </ul>
 
 
