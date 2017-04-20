@@ -21,36 +21,14 @@
 ```json
 
 {
-    "author": {
-        "name": "Max Ogden",
-        "url": "http://maxogden.com"
-    },
-    "bin": {
-        "html": "./bin/html.js"
-    },
-    "bugs": {
-        "url": "https://github.com/maxogden/commonjs-html-prettyprinter/issues"
-    },
-    "contributors": [
-        {
-            "name": "Nochum Sossonko"
-        },
-        {
-            "name": "Einar Lielmanis"
-        }
-    ],
-    "dependencies": {
-        "concat-stream": "^1.4.7"
-    },
+    "name": "html",
+    "version": "1.0.0",
     "description": "HTML pretty printer CLI utility (based on jsbeautifier)",
-    "devDependencies": {},
-    "directories": {},
-    "dist": {
-        "shasum": "a544fa9ea5492bfb3a2cca8210a10be7b5af1f61",
-        "tarball": "https://registry.npmjs.org/html/-/html-1.0.0.tgz"
-    },
-    "gitHead": "0717eb216ebcc67399ca3c0406e5c03a77f7e761",
-    "homepage": "https://github.com/maxogden/commonjs-html-prettyprinter",
+    "author": "Max Ogden <max@maxogden.com> (http://maxogden.com)",
+    "contributors": [
+        "Nochum Sossonko <nsossonko@hotmail.com>",
+        "Einar Lielmanis <elfz@laacz.lv>"
+    ],
     "keywords": [
         "html",
         "tabifier",
@@ -61,23 +39,26 @@
         "command",
         "shell"
     ],
-    "license": "BSD",
-    "main": "lib/html.js",
-    "maintainers": [
-        {
-            "name": "maxogden"
-        }
-    ],
-    "name": "html",
-    "optionalDependencies": {},
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/maxogden/commonjs-html-prettyprinter.git"
+        "url": "https://github.com/maxogden/commonjs-html-prettyprinter.git"
     },
+    "bin": {
+        "html": "./bin/html.js"
+    },
+    "main": "lib/html.js",
+    "bugs": {
+        "url": "https://github.com/maxogden/commonjs-html-prettyprinter/issues"
+    },
+    "homepage": "https://github.com/maxogden/commonjs-html-prettyprinter",
+    "dependencies": {
+        "concat-stream": "^1.4.7"
+    },
+    "devDependencies": {},
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "version": "1.0.0"
+    "license": "BSD"
 }
 ```
 
